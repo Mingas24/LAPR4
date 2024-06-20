@@ -1,0 +1,1545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n1:relatório xmlns:n1="http://www.dei.isep.ipp.pt/lprog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="token" xsi:schemaLocation="http://www.dei.isep.ipp.pt/lprog Relatorio.xsd">
+	<n1:páginaRosto>
+		<n1:tema>Sistema de Recolha, Processamento e Gestão do Chão de Fábrica</n1:tema>
+		<n1:disciplina id="LPROG">
+			<n1:designação>Linguagens e Programação</n1:designação>
+			<n1:anoCurricular>2</n1:anoCurricular>
+			<n1:sigla>LPROG</n1:sigla>
+		</n1:disciplina>
+		<n1:autor>
+			<n1:nome>Gonçalo Amorim</n1:nome>
+			<n1:número>1181069</n1:número>
+			<n1:mail>1181069@isep.ipp.pt</n1:mail>
+		</n1:autor>
+		<n1:autor>
+			<n1:nome>Francisco Costa</n1:nome>
+			<n1:número>1180954</n1:número>
+			<n1:mail>1180954@isep.ipp.pt</n1:mail>
+		</n1:autor>
+		<n1:autor>
+			<n1:nome>Luís Vigário</n1:nome>
+			<n1:número>1181090</n1:número>
+			<n1:mail>1181090@isep.ipp.pt</n1:mail>
+		</n1:autor>
+		<n1:autor>
+			<n1:nome>Pedro Costa</n1:nome>
+			<n1:número>1181481</n1:número>
+			<n1:mail>1181481@isep.ipp.pt</n1:mail>
+		</n1:autor>
+		<n1:turma>2DH</n1:turma>
+		<n1:professor sigla="AMD" tipoAula="T">String</n1:professor>
+		<n1:professor sigla="PSM" tipoAula="TP">String</n1:professor>
+		<n1:professor sigla="PDF" tipoAula="PL">String</n1:professor>
+		<n1:logotipoDEI>https://www.inovinter.pt/wp-content/uploads/2017/05/header_dei_isep-758x220.jpg</n1:logotipoDEI>
+		<n1:data>2020-06-14</n1:data>
+	</n1:páginaRosto>
+	<n1:corpo id="Corpo">
+		<n1:introdução tituloSecção="Introdução" id="SEC001">
+			<n1:parágrafo>Este relatório tem como objetivo relatar o desenvolvimento da componente de LPROG no trabalho integrador de LAPR4.</n1:parágrafo>
+			<n1:parágrafo>Iremos primeiramente analisar o domínio do problema proposto, seguidamente focando na definição da sintaxe da linguagem proposta através de um XMLSchema e
+				criação de um documento XML instância válido dessa linguagem, que foi realizada no Sprint C do trabalho integrador, incluindo também uma descrição das StyleSheets (XSLT) 
+				adequadas à transformação da informação do documento XML em novos formatos, tarefa que foi realizda no sprint final do projeto integrador, terminando com uma conclusão.
+			</n1:parágrafo>
+		</n1:introdução>
+		<n1:outrasSecções>
+			<n1:análise tituloSecção="Análise" id="SEC002">
+				<n1:parágrafo>O domíno do nosso projeto consiste na gestão de informação de uma ou mais fábricas a partir de um sistema informático.</n1:parágrafo>
+				<n1:parágrafo>Na componente de LPROG, isto é importante para definirmos a informação que virá a ser tratada posteriormente na resolução da proposta de trabalho. 
+					Essa informação está aqui representada no Modelo de Domínio.</n1:parágrafo>
+				<n1:figura src="MD.jpg" descrição="Modelo de Domínio" />
+			</n1:análise>
+			<n1:linguagem tituloSecção="Linguagem" id="SEC003">
+				<n1:parágrafo>No Sprint C foi-nos proposta a criação de um documento XSD que permite a validação de um documento XML que será produzido pelo sistema e conterá toda a 
+					informação do chão de fábrica.</n1:parágrafo>
+				<n1:parágrafo>Em seguida focamos na análise de cada um deles. Focamos primeiramente no documento XSD.</n1:parágrafo>
+				<n1:subsecção id="SUBSEC001">XSD</n1:subsecção>
+				<n1:parágrafo>Este documento é responsável pela validação do XML produzido. O documento será agrupado por várias áreas, por exemplo, existe um elemento "Produtos" que contém 
+					vários elementos do tipo "Produto", dentro deste teremos todos os seus atributos e elementos dependentes. Assim tentámos deixar o documento o mais organizado possível 
+				para ser de fácil compreensão e futuro tratamento.</n1:parágrafo>
+				<n1:parágrafo>Aqui temos o documento XSD:</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+					<xs:element name="FactoryFloor">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="Products" minOccurs="0" maxOccurs="1"/>
+								<xs:element ref="RawMaterials" minOccurs="0" maxOccurs="1"/>
+								<xs:element ref="Machines" minOccurs="0" maxOccurs="1"/>
+								<xs:element ref="ProductionLines" minOccurs="0" maxOccurs="1"/>
+								<xs:element ref="Categories" minOccurs="0" maxOccurs="1"/>
+								<xs:element ref="ProductionOrders" minOccurs="0" maxOccurs="1"/>
+								<xs:element ref="ProductionSheets" minOccurs="0" maxOccurs="1"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Products">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="Product" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Product">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Category" type="xs:string"/>
+								<xs:element name="CommercialCode" type="xs:string"/>
+								<xs:element name="CompleteDesc" type="xs:string"/>
+								<xs:element name="ShortDesc" type="xs:string"/>
+								<xs:element name="UniqueFabCode" type="xs:string"/>
+								<xs:element ref="Unity"/>
+							</xs:sequence>
+							<xs:attribute name="ID" type="xs:long" use="required"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RawMaterials">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="RawMaterial" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="RawMaterial">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Description" type="xs:string"/>
+								<xs:element name="TechSheet" type="xs:string" minOccurs="0"/>
+								<xs:element name="CategoryID" type="xs:long"/>
+							</xs:sequence>
+							<xs:attribute name="InternalCode" type="xs:string" use="required"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Machines">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="Machine" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Machine">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Brand" type="xs:string"/>
+								<xs:element name="InstallationDate" type="xs:date"/>
+								<xs:element name="Description" type="xs:string"/>
+								<xs:element name="Model" type="xs:string"/>
+								<xs:element name="SerialNum">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:minLength value="6"/>
+											<xs:maxLength value="20"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element name="PLID" type="xs:string"/>
+								<xs:element name="Type" type="xs:string"/>
+							</xs:sequence>
+							<xs:attribute name="ID" type="xs:integer" use="required"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ProductionLines">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="ProductionLine" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ProductionLine">
+						<xs:complexType>
+							<xs:attribute name="ID" type="xs:string" use="required"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Categories">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="Category" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Category">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Description" type="xs:string"/>
+								<xs:element name="CategoryID">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="10"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+							</xs:sequence>
+							<xs:attribute name="ID" type="xs:integer" use="required"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ProductionOrders">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="ProductionOrder" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ProductionOrder">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="EmissionDate" type="xs:date"/>
+								<xs:element name="ExpectedExecutionDate" type="xs:date"/>
+								<xs:element name="UniqueFabricationCode" type="xs:string"/>
+								<xs:element name="ProductOrderID" type="xs:string"/>
+								<xs:element ref="Quantity"/>
+								<xs:element ref="State"/>
+								<xs:element ref="Unity"/>
+							</xs:sequence>
+							<xs:attribute name="ID" use="required"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ProductionSheets">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="ProductionSheet" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ProductionSheet">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="Quantity"/>
+								<xs:element name="RawMaterialID" type="xs:string"/>
+							</xs:sequence>
+							<xs:attribute name="ProductID" type="xs:long" use="required"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Unity">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="UN"/>
+								<xs:enumeration value="KG"/>
+								<xs:enumeration value="L"/>
+								<xs:enumeration value="METERS"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="State">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="PENDING"/>
+								<xs:enumeration value="IN_EXECUTION"/>
+								<xs:enumeration value="EXECUTION_TEMPORARILY_STOP"/>
+								<xs:enumeration value="FINISHED"/>
+								<xs:enumeration value="SUSPENDED"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Quantity" type="xs:nonNegativeInteger"/>
+				</xs:schema>
+				]]>
+					</n1:bloco>
+				</n1:codigo>
+				<n1:subsecção id="SUBSEC002">XML</n1:subsecção>
+				<n1:parágrafo>Em seguida está um ficheiro XML modelo do produto do sistema desenvolvido. Este obedece a todo o esquema definido no documento anteriormente apresentado.</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<FactoryFloor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FactoryFloor.xsd">
+					<Products>
+						<Product ID="22">
+							<Category>Kitchen Utensils</Category>
+							<CommercialCode>160000</CommercialCode>
+							<CompleteDesc>chef knife</CompleteDesc>
+							<ShortDesc>knife</ShortDesc>
+							<UniqueFabCode>850001</UniqueFabCode>
+							<Unity>UN</Unity>
+						</Product>
+						<Product ID="23">
+							<Category>Kitchen Utensils</Category>
+							<CommercialCode>160001</CommercialCode>
+							<CompleteDesc>dinner fork</CompleteDesc>
+							<ShortDesc>fork</ShortDesc>
+							<UniqueFabCode>850002</UniqueFabCode>
+							<Unity>UN</Unity>
+						</Product>
+					</Products>
+					<RawMaterials>
+						<RawMaterial InternalCode="600">
+							<Description>zinco</Description>
+							<TechSheet>ficha1</TechSheet>
+							<CategoryID>19</CategoryID>
+						</RawMaterial>
+						<RawMaterial InternalCode="601">
+							<Description>pinho</Description>
+							<TechSheet>ficha2</TechSheet>
+							<CategoryID>20</CategoryID>
+						</RawMaterial>
+					</RawMaterials>
+					<Machines>
+						<Machine ID="10">
+							<Brand>HYUNDAY</Brand>
+							<InstallationDate>2019-09-11</InstallationDate>
+							<Description>Assembles Product</Description>
+							<Model>PRODUCT ASSEMBLER GENERATION3</Model>
+							<SerialNum>9998887773</SerialNum>
+							<PLID>Line 2</PLID>
+							<Type>Assembler</Type>
+						</Machine>
+						<Machine ID="20">
+							<Brand>FORD</Brand>
+							<InstallationDate>2019-12-25</InstallationDate>
+							<Description>USED FOR TRANSPORTING OBJECTS</Description>
+							<Model>CONVEYOR BELT GENERATION DELTA</Model>
+							<SerialNum>123456754</SerialNum>
+							<PLID>Line 2</PLID>
+							<Type>CONVEYOR BELT</Type>
+						</Machine>
+					</Machines>
+					<ProductionLines>
+						<ProductionLine ID="Line 1"/>
+						<ProductionLine ID="Line 2"/>
+					</ProductionLines>
+					<Categories>
+						<Category ID="19">
+							<Description>Metais</Description>
+							<CategoryID>1</CategoryID>
+						</Category>
+						<Category ID="20">
+							<Description>Madeira</Description>
+							<CategoryID>2</CategoryID>
+						</Category>
+					</Categories>
+					<ProductionOrders>
+						<ProductionOrder ID="25">
+							<EmissionDate>2020-05-12</EmissionDate>
+							<ExpectedExecutionDate>2020-05-14</ExpectedExecutionDate>
+							<UniqueFabricationCode>50000106</UniqueFabricationCode>
+							<ProductOrderID>100003363</ProductOrderID>
+							<Quantity>65000</Quantity>
+							<State>PENDING</State>
+							<Unity>UN</Unity>
+						</ProductionOrder>
+						<ProductionOrder ID="20">
+							<EmissionDate>2020-05-12</EmissionDate>
+							<ExpectedExecutionDate>2020-05-15</ExpectedExecutionDate>
+							<UniqueFabricationCode>1600016</UniqueFabricationCode>
+							<ProductOrderID>100003364</ProductOrderID>
+							<Quantity>200000</Quantity>
+							<State>PENDING</State>
+							<Unity>UN</Unity>
+						</ProductionOrder>
+					</ProductionOrders>
+					<ProductionSheets>
+						<ProductionSheet ProductID="22">
+							<Quantity>2</Quantity>
+							<RawMaterialID>1234</RawMaterialID>
+						</ProductionSheet>
+					</ProductionSheets>
+				</FactoryFloor>
+				]]>
+					</n1:bloco>
+				</n1:codigo>
+			</n1:linguagem>
+			<n1:transformações tituloSecção="Transformações" id="SEC004">
+				<n1:parágrafo>No Sprint D foi-nos proposta a criação de diversas StyleSheets que permitem a transformação do documento XML, produto do sistema desenvolvido, 
+					para diferentes formatos (HTML, JSON e TXT) tendo diferentes estilos e até filtros.</n1:parágrafo>
+				<n1:parágrafo>Apresentamos aqui os diferentes documentos XSL resposáveis pelas transformações juntamente com uma pequena descrição de quais as suas funções.</n1:parágrafo>
+				<n1:subsecção id="SUBSEC003">HTML</n1:subsecção>
+				<n1:parágrafo>Aqui apresentamos as transformações para HTML.</n1:parágrafo>
+				<n1:parágrafo>Primeiro temos a transformação responsável pela apresentação de toda a informação do chão de fábrica, formatando apenas o seu aspeto utilizando 
+					tabelas para melhor compreensão.</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+					<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+						<xsl:template match="/">
+							<html>
+								<body>
+									<h2>
+										Factory Floor
+									</h2>
+									<xsl:apply-templates select="FactoryFloor" /> <!-- para toda a fabrica-->
+								</body>
+							</html>
+						</xsl:template>
+					
+						<xsl:template match="Products">
+							<h3>
+								Products
+							</h3>
+							<table border="1">
+								<tr bgcolor="#ff0000">
+									<th>ID</th>
+									<th>Category</th>
+									<th>CommercialCode</th>
+									<th>CompleteDesc</th>
+									<th>ShortDesc</th>
+									<th>UniqueFabCode</th>
+									<th>Unity</th>
+								</tr>
+								<!-- para cada producto -->
+								<xsl:apply-templates select="Product" />
+							</table>
+						</xsl:template>
+						<xsl:template match="Product">
+							<tr>
+								<td>
+									<xsl:value-of select="@ID" />
+								</td>
+								<td>
+									<xsl:value-of select="Category" />
+								</td>
+								<td>
+									<xsl:value-of select="CommercialCode" />
+								</td>
+								<td>
+									<xsl:value-of select="CompleteDesc" />
+								</td>
+								<td>
+									<xsl:value-of select="ShortDesc" />
+								</td>
+								<td>
+									<xsl:value-of select="UniqueFabCode" />
+								</td>
+								<td>
+									<xsl:value-of select="Unity" />
+								</td>
+							</tr>
+						</xsl:template>
+					
+						<xsl:template match="RawMaterials">
+							<h3>
+								Raw Materials
+							</h3>
+							<table border="1">
+								<tr bgcolor="#f2ff00">
+									<th>InternalCode</th>
+									<th>Description</th>
+									<th>TechSheet</th>
+									<th>CategoryID</th>
+								</tr>
+								<!-- para cada materia prima -->
+								<xsl:apply-templates select="RawMaterial" />
+							</table>
+						</xsl:template>
+						<xsl:template match="RawMaterial">
+							<tr>
+								<td>
+									<xsl:value-of select="@InternalCode" />
+								</td>
+								<td>
+									<xsl:value-of select="Description" />
+								</td>
+								<td>
+									<xsl:value-of select="TechSheet" />
+								</td>
+								<td>
+									<xsl:value-of select="CategoryID" />
+								</td>
+							</tr>
+						</xsl:template>
+					
+						<xsl:template match="Machines">
+							<h3>
+								Machines
+							</h3>
+							<table border="1">
+								<tr bgcolor="#3a7bde">
+									<th>ID</th>
+									<th>Brand</th>
+									<th>InstallationDate</th>
+									<th>Description</th>
+									<th>Model</th>
+									<th>SerialNum</th>
+									<th>PLID</th>
+									<th>Type</th>
+								</tr>
+								<!-- para cada maquina -->
+								<xsl:apply-templates select="Machine" />
+							</table>
+						</xsl:template>
+						<xsl:template match="Machine">
+							<tr>
+								<td>
+									<xsl:value-of select="@ID" />
+								</td>
+								<td>
+									<xsl:value-of select="Brand" />
+								</td>
+								<td>
+									<xsl:value-of select="InstallationDate" />
+								</td>
+								<td>
+									<xsl:value-of select="Description" />
+								</td>
+								<td>
+									<xsl:value-of select="Model" />
+								</td>
+								<td>
+									<xsl:value-of select="SerialNum" />
+								</td>
+								<td>
+									<xsl:value-of select="PLID" />
+								</td>
+								<td>
+									<xsl:value-of select="Type" />
+								</td>
+							</tr>
+						</xsl:template>
+					
+						<xsl:template match="ProductionLines">
+							<h3>
+								Production Lines
+							</h3>
+							<table border="1">
+								<tr bgcolor="#00ff44">
+									<th>ID</th>
+								</tr>
+								<!-- para cada linha de producao -->
+								<xsl:apply-templates select="ProductionLine" />
+							</table>
+						</xsl:template>
+						<xsl:template match="ProductionLine">
+							<tr>
+								<td>
+									<xsl:value-of select="@ID" />
+								</td>
+							</tr>
+						</xsl:template>
+					
+						<xsl:template match="Categories">
+							<h3>
+								Categories
+							</h3>
+							<table border="1">
+								<tr bgcolor="#00ffff">
+									<th>ID</th>
+									<th>Description</th>
+									<th>CategoryID</th>
+								</tr>
+								<!-- para cada categoria -->
+								<xsl:apply-templates select="Category" />
+							</table>
+						</xsl:template>
+						<xsl:template match="Category">
+							<tr>
+								<td>
+									<xsl:value-of select="@ID" />
+								</td>
+								<td>
+									<xsl:value-of select="Description" />
+								</td>
+								<td>
+									<xsl:value-of select="CategoryID" />
+								</td>
+							</tr>
+						</xsl:template>
+					
+						<xsl:template match="ProductionOrders">
+							<h3>
+								Production Orders
+							</h3>
+							<table border="1">
+								<tr bgcolor="#b300ff">
+									<th>ID</th>
+									<th>EmissionDate</th>
+									<th>ExpectedExecutionDate</th>
+									<th>UniqueFabricationCode</th>
+									<th>ProductOrderID</th>
+									<th>Quantity</th>
+									<th>State</th>
+									<th>Unity</th>
+								</tr>
+								<!-- para cada ordem de producao -->
+								<xsl:apply-templates select="ProductionOrder" />
+							</table>
+						</xsl:template>
+						<xsl:template match="ProductionOrder">
+							<tr>
+								<td>
+									<xsl:value-of select="@ID" />
+								</td>
+								<td>
+									<xsl:value-of select="EmissionDate" />
+								</td>
+								<td>
+									<xsl:value-of select="ExpectedExecutionDate" />
+								</td>
+								<td>
+									<xsl:value-of select="UniqueFabricationCode" />
+								</td>
+								<td>
+									<xsl:value-of select="ProductOrderID" />
+								</td>
+								<td>
+									<xsl:value-of select="Quantity" />
+								</td>
+								<td>
+									<xsl:value-of select="State" />
+								</td>
+								<td>
+									<xsl:value-of select="Unity" />
+								</td>
+							</tr>
+						</xsl:template>
+					
+						<xsl:template match="ProductionSheets">
+							<h3>
+								ProductionSheets
+							</h3>
+							<table border="1">
+								<tr bgcolor="#ff00a6">
+									<th>ProductID</th>
+									<th>Quantity</th>
+									<th>RawMaterialID</th>
+								</tr>
+								<!-- para cada ficha de producao -->
+								<xsl:apply-templates select="ProductionSheet" />
+							</table>
+						</xsl:template>
+						<xsl:template match="ProductionSheet">
+							<tr>
+								<td>
+									<xsl:value-of select="@ProductID" />
+								</td>
+								<td>
+									<xsl:value-of select="Quantity" />
+								</td>
+								<td>
+									<xsl:value-of select="RawMaterialID" />
+								</td>
+							</tr>
+						</xsl:template>
+					
+					</xsl:stylesheet>]]>
+					</n1:bloco>
+				</n1:codigo>
+				<n1:figura src="HTMLCompleto.png" descrição="HTML com toda a informação do chão de fábrica." />
+				<n1:parágrafo>Agora temos a transformação responsável por tranformar o ficheiro XML para HTML apenas apresentando as matérias primas que possuem ficha técnica.</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+					<xsl:template match="/">
+						<html>
+							<body>
+								<h2>
+									Factory Floor
+								</h2>
+								<xsl:apply-templates select="FactoryFloor"/>
+							</body>
+						</html>
+					</xsl:template>
+				
+					<xsl:template match="Products">
+						<h3>
+							Products
+						</h3>
+						<table border="1">
+							<tr bgcolor="#ff0000">
+								<th>ID</th>
+								<th>Category</th>
+								<th>CommercialCode</th>
+								<th>CompleteDesc</th>
+								<th>ShortDesc</th>
+								<th>UniqueFabCode</th>
+								<th>Unity</th>
+							</tr>
+							<!-- para cada producto -->
+							<xsl:apply-templates select="Product"/>
+						</table>
+					</xsl:template>
+					<xsl:template match="Product">
+						<tr>
+							<td>
+								<xsl:value-of select="@ID"/>
+							</td>
+							<td>
+								<xsl:value-of select="Category"/>
+							</td>
+							<td>
+								<xsl:value-of select="CommercialCode"/>
+							</td>
+							<td>
+								<xsl:value-of select="CompleteDesc"/>
+							</td>
+							<td>
+								<xsl:value-of select="ShortDesc"/>
+							</td>
+							<td>
+								<xsl:value-of select="UniqueFabCode"/>
+							</td>
+							<td>
+								<xsl:value-of select="Unity"/>
+							</td>
+						</tr>
+					</xsl:template>
+				
+					<xsl:template match="RawMaterials">
+						<h3>
+							Only Raw Materials With Tech Sheet
+						</h3>
+						<table border="1">
+							<tr bgcolor="#f2ff00">
+								<th>InternalCode</th>
+								<th>Description</th>
+								<th>TechSheet</th>
+								<th>CategoryID</th>
+							</tr>
+							<!-- para cada materia prima -->
+							<xsl:apply-templates select="RawMaterial"/>
+						</table>
+					</xsl:template>
+					<xsl:template match="RawMaterial">
+						<xsl:if test="TechSheet">
+							<tr>
+								<td>
+									<xsl:value-of select="@InternalCode"/>
+								</td>
+								<td>
+									<xsl:value-of select="Description"/>
+								</td>
+								<td>
+									<xsl:value-of select="TechSheet"/>
+								</td>
+								<td>
+									<xsl:value-of select="CategoryID"/>
+								</td>
+							</tr>
+						</xsl:if>
+					</xsl:template>
+				
+					<xsl:template match="Machines">
+					</xsl:template>
+					<xsl:template match="Machine">
+					</xsl:template>
+				
+					<xsl:template match="ProductionLines">
+					</xsl:template>
+					<xsl:template match="ProductionLine">
+					</xsl:template>
+				
+					<xsl:template match="Categories">
+					</xsl:template>
+					<xsl:template match="Category">
+					</xsl:template>
+				
+					<xsl:template match="ProductionOrders">
+					</xsl:template>
+					<xsl:template match="ProductionOrder">
+					</xsl:template>
+				
+					<xsl:template match="ProductionSheets">
+						<h3>
+							ProductionSheets
+						</h3>
+						<table border="1">
+							<tr bgcolor="#ff00a6">
+								<th>ProductID</th>
+								<th>Quantity</th>
+								<th>RawMaterialID</th>
+							</tr>
+							<!-- para cada ficha de producao -->
+							<xsl:apply-templates select="ProductionSheet"/>
+						</table>
+					</xsl:template>
+					<xsl:template match="ProductionSheet">
+						<tr>
+							<td>
+								<xsl:value-of select="@ProductID"/>
+							</td>
+							<td>
+								<xsl:value-of select="Quantity"/>
+							</td>
+							<td>
+								<xsl:value-of select="RawMaterialID"/>
+							</td>
+						</tr>
+					</xsl:template>
+				</xsl:stylesheet>]]>
+					</n1:bloco>
+				</n1:codigo>
+				<n1:figura src="HTMLRawMaterialsTechSheet.png" descrição="HTML que apenas apresenta matérias primas com ficha técnica." />
+				<n1:parágrafo>Aqui temos a transformação responsável por tranformar o ficheiro XML para HTML apenas apresentando os produtos que têm como unidade de medida o Kg.</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+					<xsl:template match="/">
+						<html>
+							<body>
+								<h2>
+									Factory Floor
+								</h2>
+								<xsl:apply-templates select="FactoryFloor"/> <!-- para toda a fabrica-->
+							</body>
+						</html>
+					</xsl:template>
+				
+					<xsl:template match="Products">
+						<h3>
+							Products Which Unit is Kilo
+						</h3>
+						<table border="1">
+							<tr bgcolor="#ff0000">
+								<th>ID</th>
+								<th>Category</th>
+								<th>CommercialCode</th>
+								<th>CompleteDesc</th>
+								<th>ShortDesc</th>
+								<th>UniqueFabCode</th>
+								<th>Unity</th>
+							</tr>
+							<!-- para cada producto -->
+							<xsl:apply-templates select="Product"/>
+						</table>
+					</xsl:template>
+					<xsl:template match="Product">
+						<xsl:if test="Unity = 'KG'">
+							<tr>
+								<td>
+									<xsl:value-of select="@ID"/>
+								</td>
+								<td>
+									<xsl:value-of select="Category"/>
+								</td>
+								<td>
+									<xsl:value-of select="CommercialCode"/>
+								</td>
+								<td>
+									<xsl:value-of select="CompleteDesc"/>
+								</td>
+								<td>
+									<xsl:value-of select="ShortDesc"/>
+								</td>
+								<td>
+									<xsl:value-of select="UniqueFabCode"/>
+								</td>
+								<td>
+									<xsl:value-of select="Unity"/>
+								</td>
+							</tr>
+						</xsl:if>
+					</xsl:template>
+					<xsl:template match="RawMaterials">
+					</xsl:template>
+					<xsl:template match="RawMaterial">
+					</xsl:template>
+					<xsl:template match="Machines">
+					</xsl:template>
+					<xsl:template match="Machine">
+					</xsl:template>
+					<xsl:template match="ProductionLines">
+					</xsl:template>
+					<xsl:template match="ProductionLine">
+					</xsl:template>
+					<xsl:template match="Categories">
+					</xsl:template>
+					<xsl:template match="Category">
+					</xsl:template>
+					<xsl:template match="ProductionOrders">
+					</xsl:template>
+					<xsl:template match="ProductionOrder">
+					</xsl:template>
+					<xsl:template match="ProductionSheets">
+					</xsl:template>
+					<xsl:template match="ProductionSheet">
+					</xsl:template>
+				</xsl:stylesheet>]]>
+					</n1:bloco>
+				</n1:codigo>
+				<n1:figura src="HTMLProductsKg.png" descrição="HTML que apenas apresenta produtos com Kg como unidade de medida." />
+				<n1:subsecção id="SUBSEC004">TXT</n1:subsecção>
+				<n1:parágrafo>Aqui são apresentadas as transformações para TXT.</n1:parágrafo>
+				<n1:parágrafo>Primeiro apresentamos o XSL que tranforma o ficheiro XML num documento TXT que contém toda a informação do chão de fábrica, mas à semelhança de um ficheiro CSV.</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+					<xsl:output method="text" omit-xml-declaration="yes" indent="yes"/>
+					<xsl:template match="FactoryFloor">
+						<xsl:text>ID;Category;CommercialCode;CompleteDesc;ShortDesc;UniqueFabCode;Unity</xsl:text>
+						<xsl:apply-templates select="Products"/>
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>InternalCode;Description;TechSheet;CategoryID</xsl:text>
+						<xsl:apply-templates select="RawMaterials"/>
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>ID;Brand;InstallationDate;Description;Model;SerialNum;PLID;Type</xsl:text>
+						<xsl:apply-templates select="Machines"/>
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>ID</xsl:text>
+						<xsl:apply-templates select="ProductionLines"/>
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>ID;Description;CategoryID</xsl:text>
+						<xsl:apply-templates select="Categories"/>
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>ID;EmissionDate;ExpectedExecutionDate;UniqueFabricationCode;ProductOrderID;Quantity;State;Unity</xsl:text>
+						<xsl:apply-templates select="ProductionOrders"/>
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>ProductID;Quantity;RawMaterialID</xsl:text>
+						<xsl:apply-templates select="ProductionSheets"/>
+						<xsl:text>&#10;</xsl:text>
+					</xsl:template>
+				
+					<xsl:template match="Products/Product">
+						<xsl:value-of
+								select="concat(./@ID,';',./Category,';',./CommercialCode,';',./CompleteDesc,';',./ShortDesc,';',./UniqueFabCode,';',./Unity)"/>
+					</xsl:template>
+				
+					<xsl:template match="RawMaterials/RawMaterial">
+						<xsl:value-of select="concat(./@InternalCode,';',./Description,';',./TechSheet,';',./CategoryID)"/>
+					</xsl:template>
+				
+					<xsl:template match="Machines/Machine">
+						<xsl:value-of
+								select="concat(./@ID,';',./Brand,';',./InstallationDate,';',./Description,';',./Model,';',./SerialNum,';',./PLID,';',./Type)"/>
+					</xsl:template>
+				
+					<xsl:template match="ProductionLines/ProductionLine">
+						<xsl:value-of select="./@ID"/>
+					</xsl:template>
+				
+					<xsl:template match="Categories/Category">
+						<xsl:value-of select="concat(./@ID,';',./Description,';',./CategoryID)"/>
+					</xsl:template>
+				
+					<xsl:template match="ProductionOrders/ProductionOrder">
+						<xsl:value-of
+								select="concat(./@ID,';',./EmissionDate,';',./ExpectedExecutionDate,';',./UniqueFabricationCode,';',./ProductOrderID,';',./Quantity,';',./State,';',./Unity)"/>
+					</xsl:template>
+				
+					<xsl:template match="ProductionSheets/ProductionSheet">
+						<xsl:value-of select="concat(./@ProductID,';',./Quantity,';',./RawMaterialID)"/>
+					</xsl:template>
+				</xsl:stylesheet>]]>
+					</n1:bloco>
+				</n1:codigo>
+				<n1:figura src="TXTCompleteCSV" descrição="TXT à semelhança de um CSV" />
+				<n1:parágrafo>Agora o XSL que transforma o ficheiro que contém toda a informação do chão de fabrica e apenas aprensenta os produtos cuja unidade de medida é o Kg.</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+					<xsl:output method="text" omit-xml-declaration="yes" indent="yes"/>
+					<xsl:template match="FactoryFloor">
+						<xsl:text>ID;Category;CommercialCode;CompleteDesc;ShortDesc;UniqueFabCode;Unity</xsl:text>
+						<xsl:apply-templates select="Products"/>
+						<xsl:text>&#10;</xsl:text>
+					</xsl:template>
+				
+					<xsl:template match="Products">
+						<xsl:choose>
+							<xsl:when test="Product/Unity = 'KG'">
+								<xsl:apply-templates select="Product"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>&#10;</xsl:text>
+								<xsl:text>No Products using KG as UNIT</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:template>
+				
+					<xsl:template match="Product">
+						<xsl:if test="Unity = 'KG'">
+							<xsl:text>&#10;</xsl:text>
+							<xsl:value-of
+									select="concat(./@ID,';',./Category,';',./CommercialCode,';',./CompleteDesc,';',./ShortDesc,';',./UniqueFabCode,';',./Unity)"/>
+						</xsl:if>
+					</xsl:template>
+				</xsl:stylesheet>]]>
+					</n1:bloco>
+				</n1:codigo>
+				<n1:figura src="TXTProductsKg.png" descrição="TXT com produtos que têm como unidade de medida o Kg." />
+				<n1:parágrafo>Aqui está o ficheiro XSL responsável pela transformação para um ficheiro TXT que apresenta apenas as linhas de produção que contêm máquinas.</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+					<xsl:output method="text" omit-xml-declaration="yes" indent="yes"/>
+					<xsl:template match="FactoryFloor">
+						<xsl:text>ID</xsl:text>
+						<xsl:text>&#xa;</xsl:text>
+						<xsl:apply-templates select="Machines/Machine[not(PLID=preceding-sibling::Machine/PLID)]"/>
+					</xsl:template>
+				
+					<xsl:template match="Machine">
+						<xsl:value-of select="PLID"/>
+						<xsl:text>&#xa;</xsl:text>
+					</xsl:template>
+				</xsl:stylesheet>
+				]]>
+					</n1:bloco>
+				</n1:codigo>
+				<n1:figura src="TXTPLsWithMach.jpg" descrição="TXT com apenas linhas de produção que contêm máquinas." />
+				<n1:subsecção id="SUBSEC005">JSON</n1:subsecção>
+				<n1:parágrafo>Aqui estão as transformações para JSON</n1:parágrafo>
+				<n1:parágrafo>Esta tranformação cria o ficheiro JSON que contém a informação de todo o chão de fábrica.</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+					<xsl:output method="text" encoding="utf-8"/>
+				
+					<xsl:template match="/">
+						<xsl:text>{</xsl:text>
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>"</xsl:text><xsl:value-of select="name(FactoryFloor)"/>
+						<xsl:text>" : {</xsl:text>
+						<xsl:text>&#10;</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(FactoryFloor/Products)"/>
+						<xsl:text>" : [</xsl:text>
+						<xsl:apply-templates select="FactoryFloor/Products"/>
+						<xsl:text>]</xsl:text>
+						<xsl:text> , </xsl:text>
+						<xsl:text>&#10;</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(FactoryFloor/RawMaterials)"/>
+						<xsl:text>" : [</xsl:text>
+						<xsl:apply-templates select="FactoryFloor/RawMaterials"/>
+						<xsl:text>]</xsl:text>
+						<xsl:text> , </xsl:text>
+						<xsl:text>&#10;</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(FactoryFloor/Machines)"/>
+						<xsl:text>" : [</xsl:text>
+						<xsl:apply-templates select="FactoryFloor/Machines"/>
+						<xsl:text>]</xsl:text>
+						<xsl:text> , </xsl:text>
+						<xsl:text>&#10;</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(FactoryFloor/ProductionLines)"/>
+						<xsl:text>" : [</xsl:text>
+						<xsl:apply-templates select="FactoryFloor/ProductionLines"/>
+						<xsl:text>]</xsl:text>
+						<xsl:text> , </xsl:text>
+						<xsl:text>&#10;</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(FactoryFloor/Categories)"/>
+						<xsl:text>" : [</xsl:text>
+						<xsl:apply-templates select="FactoryFloor/Categories"/>
+						<xsl:text>]</xsl:text>
+						<xsl:text> , </xsl:text>
+						<xsl:text>&#10;</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(FactoryFloor/ProductionOrders)"/>
+						<xsl:text>" : [</xsl:text>
+						<xsl:apply-templates select="FactoryFloor/ProductionOrders"/>
+						<xsl:text>]</xsl:text>
+						<xsl:text> , </xsl:text>
+						<xsl:text>&#10;</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(FactoryFloor/ProductionSheets)"/>
+						<xsl:text>" : [</xsl:text>
+						<xsl:apply-templates select="FactoryFloor/ProductionSheets"/>
+						<xsl:text>]</xsl:text>
+				
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>}</xsl:text>
+						<xsl:text>}</xsl:text>
+					</xsl:template>
+				
+					<!-- Produtos -->
+					<xsl:template match="Product">
+						<xsl:text>{</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(@ID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="@ID"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Category)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Category"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(CommercialCode)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="CommercialCode"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(CompleteDesc)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="CompleteDesc"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(ShortDesc)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="ShortDesc"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(UniqueFabCode)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="UniqueFabCode"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Unity)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Unity"/>
+						<xsl:text>"</xsl:text>
+				
+						<xsl:text>}</xsl:text>
+						<xsl:if test="following-sibling::*">
+							<xsl:text> , </xsl:text>
+						</xsl:if>
+					</xsl:template>
+				
+					<!-- Materias Primas -->
+					<xsl:template match="RawMaterial">
+						<xsl:text>{</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(@InternalCode)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="@InternalCode"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Description)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Description"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(TechSheet)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="TechSheet"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(CategoryID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="CategoryID"/>
+						<xsl:text>"</xsl:text>
+				
+						<xsl:text>}</xsl:text>
+						<xsl:if test="following-sibling::*">
+							<xsl:text> , </xsl:text>
+						</xsl:if>
+					</xsl:template>
+				
+					<!-- Maquinas -->
+					<xsl:template match="Machine">
+						<xsl:text>{</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(@ID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="@ID"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Brand)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Brand"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(InstallationDate)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="InstallationDate"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Description)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Description"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Model)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Model"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(SerialNum)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="SerialNum"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(PLID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="PLID"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Type)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Type"/>
+						<xsl:text>"</xsl:text>
+				
+						<xsl:text>}</xsl:text>
+						<xsl:if test="following-sibling::*">
+							<xsl:text> , </xsl:text>
+						</xsl:if>
+					</xsl:template>
+				
+					<!-- Linhas de Producao -->
+					<xsl:template match="ProductionLine">
+						<xsl:text>{</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(@ID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="@ID"/>
+						<xsl:text>"</xsl:text>
+				
+						<xsl:text>}</xsl:text>
+						<xsl:if test="following-sibling::*">
+							<xsl:text> , </xsl:text>
+						</xsl:if>
+					</xsl:template>
+				
+					<!-- Categorias -->
+					<xsl:template match="Category">
+						<xsl:text>{</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(@ID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="@ID"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Description)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Description"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(CategoryID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="CategoryID"/>
+						<xsl:text>"</xsl:text>
+				
+						<xsl:text>}</xsl:text>
+						<xsl:if test="following-sibling::*">
+							<xsl:text> , </xsl:text>
+						</xsl:if>
+					</xsl:template>
+				
+					<!-- Ordens de Producao -->
+					<xsl:template match="ProductionOrder">
+						<xsl:text>{</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(@ID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="@ID"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(EmissionDate)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="EmissionDate"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(ExpectedExecutionDate)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="ExpectedExecutionDate"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(UniqueFabricationCode)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="UniqueFabricationCode"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(ProductOrderID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="ProductOrderID"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Quantity)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Quantity"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(State)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="State"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Unity)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Unity"/>
+						<xsl:text>"</xsl:text>
+				
+						<xsl:text>}</xsl:text>
+						<xsl:if test="following-sibling::*">
+							<xsl:text> , </xsl:text>
+						</xsl:if>
+					</xsl:template>
+				
+					<!-- Fichas de Producao -->
+					<xsl:template match="ProductionSheet">
+						<xsl:text>{</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(@ProductID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="@ProductID"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Quantity)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Quantity"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(RawMaterialID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="RawMaterialID"/>
+						<xsl:text>"</xsl:text>
+				
+						<xsl:text>}</xsl:text>
+						<xsl:if test="following-sibling::*">
+							<xsl:text> , </xsl:text>
+						</xsl:if>
+					</xsl:template>
+				
+				</xsl:stylesheet>]]>
+					</n1:bloco>
+				</n1:codigo>
+				<n1:figura src="JSONComplete" descrição="JSON com toda a informação do chão de fábrica" />
+				<n1:parágrafo>De seguida, está a tranformação para JSON que contém apenas as máquinas.</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+					<xsl:output method="text" encoding="utf-8"/>
+					<xsl:template match="/">
+						<xsl:text>{</xsl:text>
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>"</xsl:text><xsl:value-of select="name(FactoryFloor)"/>
+						<xsl:text>" : {</xsl:text>
+						<xsl:text>&#10;</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(FactoryFloor/Machines)"/>
+						<xsl:text>" : [</xsl:text>
+						<xsl:apply-templates select="FactoryFloor/Machines"/>
+						<xsl:text>]</xsl:text>
+				
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>}</xsl:text>
+						<xsl:text>}</xsl:text>
+					</xsl:template>
+				
+					<!-- Maquinas -->
+					<xsl:template match="Machine">
+						<xsl:text>{</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(@ID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="@ID"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Brand)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Brand"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(InstallationDate)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="InstallationDate"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Description)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Description"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Model)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Model"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(SerialNum)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="SerialNum"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(PLID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="PLID"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Type)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Type"/>
+						<xsl:text>"</xsl:text>
+				
+						<xsl:text>}</xsl:text>
+						<xsl:if test="following-sibling::*">
+							<xsl:text> , </xsl:text>
+						</xsl:if>
+					</xsl:template>
+				</xsl:stylesheet>]]>
+					</n1:bloco>
+				</n1:codigo>
+				<n1:figura src="JSONMachines.png" descrição="JSON com apenas máquinas." />
+				<n1:parágrafo>Por fim, temos a transformação para JSON que apenas contém informação sobre produtos.</n1:parágrafo>
+				<n1:codigo>
+					<n1:bloco>
+						<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+					<xsl:output method="text" encoding="utf-8"/>
+					<xsl:template match="/">
+						<xsl:text>{</xsl:text>
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>"</xsl:text><xsl:value-of select="name(FactoryFloor)"/>
+						<xsl:text>" : {</xsl:text>
+						<xsl:text>&#10;</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(FactoryFloor/Products)"/>
+						<xsl:text>" : [</xsl:text>
+						<xsl:apply-templates select="FactoryFloor/Products"/>
+						<xsl:text>]</xsl:text>
+				
+						<xsl:text>&#10;</xsl:text>
+						<xsl:text>}</xsl:text>
+						<xsl:text>}</xsl:text>
+					</xsl:template>
+				
+					<!-- Produtos -->
+					<xsl:template match="Product">
+						<xsl:text>{</xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(@ID)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="@ID"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Category)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Category"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(CommercialCode)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="CommercialCode"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(CompleteDesc)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="CompleteDesc"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(ShortDesc)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="ShortDesc"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(UniqueFabCode)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="UniqueFabCode"/>
+						<xsl:text>"</xsl:text>
+						<xsl:text> , </xsl:text>
+				
+						<xsl:text>"</xsl:text>
+						<xsl:value-of select="name(Unity)"/>
+						<xsl:text>" : "</xsl:text>
+						<xsl:value-of select="Unity"/>
+						<xsl:text>"</xsl:text>
+				
+						<xsl:text>}</xsl:text>
+						<xsl:if test="following-sibling::*">
+							<xsl:text> , </xsl:text>
+						</xsl:if>
+					</xsl:template>
+				</xsl:stylesheet>]]>
+					</n1:bloco>
+				</n1:codigo>
+				<n1:figura src="JSONProducts.png" descrição="JSON que apenas contém a informação dos produtos."/>
+			</n1:transformações>
+		</n1:outrasSecções>
+		<n1:conclusão tituloSecção="Conclusão" id="SEC005">
+			<n1:parágrafo>Em conclusão, todos os requisitos foram cumpridos da melhor forma. Estamos satisfeitos com o resultado obtido e com o esforço da equipa.</n1:parágrafo>
+		</n1:conclusão>
+		<n1:referências tituloSecção="Referências" id="SEC006">
+			<n1:refWeb idRef="RefW_W3Schools">
+				<n1:URL>https://www.w3schools.com/</n1:URL>
+				<n1:descrição>W3Schools.com</n1:descrição>
+				<n1:consultadoEm>2020-06-01</n1:consultadoEm>
+			</n1:refWeb>
+		</n1:referências>
+	</n1:corpo>
+	<n1:anexos tituloSecção="Anexos" id="SEC007">
+		<n1:parágrafo>Sem Anexos</n1:parágrafo>
+	</n1:anexos>
+</n1:relatório>

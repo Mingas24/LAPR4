@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="FactoryFloor">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Products" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="RawMaterials" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="Machines" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="ProductionLines" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="Categories" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="ProductionOrders" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="ProductionSheets" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Products">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Product" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Product">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Category" type="xs:string"/>
+				<xs:element name="CommercialCode" type="xs:string"/>
+				<xs:element name="CompleteDesc" type="xs:string"/>
+				<xs:element name="ShortDesc" type="xs:string"/>
+				<xs:element name="UniqueFabCode" type="xs:string"/>
+				<xs:element ref="Unity"/>
+			</xs:sequence>
+			<xs:attribute name="ID" type="xs:long" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RawMaterials">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="RawMaterial" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RawMaterial">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Description" type="xs:string"/>
+				<xs:element name="TechSheet" type="xs:string" minOccurs="0"/>
+				<xs:element name="CategoryID" type="xs:long"/>
+			</xs:sequence>
+			<xs:attribute name="InternalCode" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Machines">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Machine" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Machine">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Brand" type="xs:string"/>
+				<xs:element name="InstallationDate" type="xs:date"/>
+				<xs:element name="Description" type="xs:string"/>
+				<xs:element name="Model" type="xs:string"/>
+				<xs:element name="SerialNum">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:minLength value="6"/>
+							<xs:maxLength value="20"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="PLID" type="xs:string"/>
+				<xs:element name="Type" type="xs:string"/>
+			</xs:sequence>
+			<xs:attribute name="ID" type="xs:integer" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ProductionLines">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ProductionLine" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ProductionLine">
+		<xs:complexType>
+			<xs:attribute name="ID" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Categories">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Category" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Category">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Description" type="xs:string"/>
+				<xs:element name="CategoryID">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="10"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ID" type="xs:integer" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ProductionOrders">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ProductionOrder" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ProductionOrder">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="EmissionDate" type="xs:date"/>
+				<xs:element name="ExpectedExecutionDate" type="xs:date"/>
+				<xs:element name="UniqueFabricationCode" type="xs:string"/>
+				<xs:element name="ProductOrderID" type="xs:string"/>
+				<xs:element ref="Quantity"/>
+				<xs:element ref="State"/>
+				<xs:element ref="Unity"/>
+			</xs:sequence>
+			<xs:attribute name="ID" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ProductionSheets">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ProductionSheet" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ProductionSheet">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Quantity"/>
+				<xs:element name="RawMaterialID" type="xs:string"/>
+			</xs:sequence>
+			<xs:attribute name="ProductID" type="xs:long" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Unity">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="UN"/>
+				<xs:enumeration value="KG"/>
+				<xs:enumeration value="L"/>
+				<xs:enumeration value="METERS"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="State">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="PENDING"/>
+				<xs:enumeration value="IN_EXECUTION"/>
+				<xs:enumeration value="EXECUTION_TEMPORARILY_STOP"/>
+				<xs:enumeration value="FINISHED"/>
+				<xs:enumeration value="SUSPENDED"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Quantity" type="xs:nonNegativeInteger"/>
+</xs:schema>
